@@ -1,10 +1,11 @@
 [tool.poetry]
-name = "cruft"
+name = "cruft-iai"
 version = "0.0.0"
 description = "Allows you to maintain all the necessary cruft for packaging and building projects separate from the code you intentionally write. Built on-top of CookieCutter."
 authors = ["Timothy Crosley <timothy.crosley@gmail.com>", "Sambhav Kothari <sambhavs.email@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "cruft" }]
 
 [tool.poetry.dependencies]
 python = ">=3.7"
@@ -42,7 +43,7 @@ portray = { version = ">=1.7.0", python = ">=3.7.0,<4.0"}
 vulture = ">=1.0"
 
 [tool.poetry.scripts]
-cruft = "cruft._cli:app"
+cruft-iai = "cruft._cli:app"
 
 [tool.portray.mkdocs.theme]
 favicon = "art/logo.png"
