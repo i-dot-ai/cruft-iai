@@ -20,7 +20,6 @@ def create(
     no_input: bool = True,
     directory: Optional[str] = None,
     checkout: Optional[str] = None,
-    overwrite_if_exists: bool = False,
     skip: Optional[List[str]] = None,
 ) -> Path:
     """Expand a Git based Cookiecutter template into a new project on disk."""
@@ -52,7 +51,7 @@ def create(
             generate_files(
                 repo_dir=cookiecutter_template_dir,
                 context=context,
-                overwrite_if_exists=overwrite_if_exists,
+                overwrite_if_exists=True,
                 output_dir=str(output_dir),
             )
         )

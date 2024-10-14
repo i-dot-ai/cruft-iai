@@ -100,13 +100,6 @@ def create(
         "-c",
         help=("The git reference to check against. Supports branches, tags and commit hashes."),
     ),
-    overwrite_if_exists: bool = typer.Option(
-        False,
-        "--overwrite-if-exists",
-        "-f",
-        show_default=False,
-        help="Overwrite the contents of the output directory if it already exists",
-    ),
     skip: Optional[List[str]] = typer.Option(
         None, "--skip", show_default=False, help="Default files/pattern to skip on update"
     ),
@@ -121,7 +114,6 @@ def create(
         no_input=no_input,
         directory=directory,
         checkout=checkout,
-        overwrite_if_exists=overwrite_if_exists,
         skip=skip,
     )
 
