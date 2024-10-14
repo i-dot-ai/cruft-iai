@@ -13,7 +13,7 @@ _______\////////__\///___________\/////////______\///_________\/////__
 
 If you need the boilerplate, at least let cruft manage it.
 
-Version: {__version__}
+Version: {__version__} (i.AI Fork)
 
 Copyright Timothy Edmund Crosley, Sambhav Kothari 2020 MIT License
 """
