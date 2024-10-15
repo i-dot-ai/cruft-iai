@@ -837,7 +837,6 @@ prompt-toolkit = ">=3.0.41,<3.1.0"
 pygments = ">=2.4.0"
 stack-data = "*"
 traitlets = ">=5.13.0"
-typing-extensions = {version = ">=4.6", markers = "python_version < \"3.12\""}
 
 [package.extras]
 all = ["ipython[black,doc,kernel,matplotlib,nbconvert,nbformat,notebook,parallel,qtconsole]", "ipython[test,test-extra]"]
@@ -2324,5 +2323,5 @@ pyproject = ["toml"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.11"
-content-hash = "05858277741dbf6a8a5c9a81b9b5d3126da7d9e4b8390a9fc8a8d5e580d567f4"
+python-versions = ">=3.12"
+content-hash = "2013d93a658ff5f9ad403cce5e1d26122e38c02b702618fb6bfc275264d29ddf"
