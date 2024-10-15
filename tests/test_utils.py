@@ -102,7 +102,7 @@ def test_remove_paths_with_glob_pattern_and_string(tmp_path: Path):
     (repo0 / "tests" / "test0.py").touch()
     (repo0 / "tests" / "test1.py").touch()
 
-    with pytest.warns(None) as warn_record:
+    with pytest.warns() as warn_record:
         utils.generate._remove_paths(repo0, {5})  # type: ignore
     assert len(warn_record) != 0, "a warning should have been called as typing was off"
     assert (repo0 / "tests" / "test0.py").exists()
