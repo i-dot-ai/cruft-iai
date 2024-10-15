@@ -245,7 +245,7 @@ index be6a56b..1fc03a9 100644
 @@ -1 +1 @@
 -new content 0
 +content0
-"""
+"""  # noqa: E501
     expected_output_regex = re.escape(expected_output)
     expected_output_regex = expected_output_regex.replace(r"\{tmpdir\}", r"([^\n]*)")
     expected_output_regex = rf"^{expected_output_regex}$"
