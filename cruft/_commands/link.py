@@ -7,6 +7,7 @@ from . import utils
 from .utils import example
 from .utils.clean import clean_context
 from .utils.iohelper import AltTemporaryDirectory
+from .utils.validate import validate_cookiecutter
 
 
 @example("https://github.com/timothycrosley/cookiecutter-python/")
@@ -43,6 +44,9 @@ def link(
             project_dir,
             checkout,
         )
+
+        validate_cookiecutter(cookiecutter_template_dir)
+
         if no_input:
             use_commit = last_commit
         else:
