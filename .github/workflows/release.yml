@@ -9,7 +9,7 @@ on:
 jobs:
   publish:
     name: Publish
-    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@master
+    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml
     with: 
       stage: prod
       tag: ${{ github.event.release.tag_name }}
