@@ -1,6 +1,6 @@
 ---
 name: Publish
-run-name: Publish ${{ inputs.tag }} to PyPI ${{ inputs.tag }}
+run-name: Publish ${{ inputs.tag }} to PyPI
 
 on:
   workflow_call:
@@ -53,10 +53,10 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   determine-success:
+    if: inputs.stage == 'prod' && always()
     needs:
       - build-and-publish
     runs-on: ubuntu-latest
-    if: always()
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
@@ -76,7 +76,7 @@ jobs:
       - determine-success
     with:
       WORKFLOW_PASSED: ${{ needs.determine-success.outputs.success == 'true' }}
-      SUCCESS_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":airplane: ${{ github.repository }} - Successfully deployed ${{ inputs.tag }} :large_green_circle:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Package published to PyPi successfully\"}}]}"
-      FAILURE_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":x: ${{ github.repository }} - Failed to deploy ${{ inputs.tag }} :x:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Failed to publish package to PyPi\"}}]}"
+      SUCCESS_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":airplane: ${{ github.repository }} - Successfully deployed ${{ inputs.tag }} :large_green_circle:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Package published to PyPI successfully\"}}]}"
+      FAILURE_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":x: ${{ github.repository }} - Failed to deploy ${{ inputs.tag }} :x:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Failed to publish package to PyPI\"}}]}"
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
