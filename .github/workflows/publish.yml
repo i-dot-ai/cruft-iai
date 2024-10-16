@@ -1,16 +1,10 @@
 ---
 name: Publish
-run-name: Publish ${{ inputs.tag }} to PyPI
+run-name: Publish ${{ github.event.release.tag_name }} to PyPI
 
 on:
-  workflow_call:
-    inputs:
-      stage:
-        type: string
-        required: true
-      tag:
-        type: string
-        required: true
+  release:
+    types: [released]
 
 jobs:
   build-and-publish:
@@ -37,23 +31,16 @@ jobs:
           poetry install
 
       - name: Bump version number
-        run: poetry version ${{ inputs.tag }}
+        run: poetry version ${{ github.event.release.tag_name }}
 
       - name: Build package
         run: poetry build
 
-      - name: Publish to test pypi
-        if: inputs.stage == 'test'
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: 'https://test.pypi.org/legacy/'
-
       - name: Publish to prod pypi
-        if: inputs.stage == 'prod'
         uses: pypa/gh-action-pypi-publish@release/v1
 
   determine-success:
-    if: inputs.stage == 'prod' && always()
+    if: always()
     needs:
       - build-and-publish
     runs-on: ubuntu-latest
@@ -69,14 +56,14 @@ jobs:
           fi
 
   notify-slack:
-    if: inputs.stage == 'prod' && always()
+    if: always()
     uses: i-dot-ai/i-dot-ai-core-github-actions/.github/workflows/slack-notify.yml@main
     needs:
       - build-and-publish
       - determine-success
     with:
       WORKFLOW_PASSED: ${{ needs.determine-success.outputs.success == 'true' }}
-      SUCCESS_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":airplane: ${{ github.repository }} - Successfully deployed ${{ inputs.tag }} :large_green_circle:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Package published to PyPI successfully\"}}]}"
-      FAILURE_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":x: ${{ github.repository }} - Failed to deploy ${{ inputs.tag }} :x:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Failed to publish package to PyPI\"}}]}"
+      SUCCESS_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":airplane: ${{ github.repository }} - Successfully deployed ${{ github.event.release.tag_name }}:large_green_circle:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Package published to PyPI successfully\"}}]}"
+      FAILURE_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":x: ${{ github.repository }} - Failed to deploy ${{ github.event.release.tag_name }} :x:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Failed to publish package to PyPI\"}}]}"
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
