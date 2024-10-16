@@ -1,16 +1,10 @@
 name: Run tests
 on:
   push:
-  workflow_call:
 
 jobs:
-  test-code:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["macos-latest"]
-        python-version: ["3.12"]
-    runs-on: ${{ matrix.os }}
+  test:
+    runs-on: "macos-latest"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,26 +12,29 @@ jobs:
       - name: Install poetry
         run: pipx install poetry
 
-      - name: Setup Python ${{ matrix.python-version }}
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
           cache: "poetry"
 
       - name: Install dependencies
         run: |
-          poetry env use python
+          poetry env use "3.12"
           poetry install
 
       - name: Run Checks
         run: |
           bash scripts/test.sh --ci
 
-  test-publish:
-    if: github.event.ref_name == github.event.repository.default_branch
-    needs:
-      - test-code
-    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@master
-    with:
-      stage: test
-      tag: "0.0.0"
+      - name: Bump version number
+        run: poetry version 0.0.0
+
+      - name: Build package
+        run: poetry build
+
+      - name: Publish to test pypi
+        if: github.ref_name == github.event.repository.default_branch
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: 'https://test.pypi.org/legacy/'
