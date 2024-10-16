@@ -53,10 +53,10 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   determine-success:
+    if: inputs.stage == 'prod' && always()
     needs:
       - build-and-publish
     runs-on: ubuntu-latest
-    if: always()
     outputs:
       success: ${{ steps.success.outputs.success }}
     steps:
