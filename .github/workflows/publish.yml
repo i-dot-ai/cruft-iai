@@ -51,3 +51,32 @@ jobs:
       - name: Publish to prod pypi
         if: inputs.stage == 'prod'
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  determine-success:
+    needs:
+      - build-and-publish
+    runs-on: ubuntu-latest
+    if: always()
+    outputs:
+      success: ${{ steps.success.outputs.success }}
+    steps:
+      - id: success
+        run: |
+          if [[ "${{ needs.build-and-publish.result }}" == "success" ]]; then
+              echo "success=true" >> $GITHUB_OUTPUT
+          else
+              echo "success=false" >> $GITHUB_OUTPUT
+          fi
+
+  notify-slack:
+    if: inputs.stage == 'prod' && always()
+    uses: i-dot-ai/i-dot-ai-core-github-actions/.github/workflows/slack-notify.yml@main
+    needs:
+      - build-and-publish
+      - determine-success
+    with:
+      WORKFLOW_PASSED: ${{ needs.determine-success.outputs.success == 'true' }}
+      SUCCESS_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":airplane: ${{ github.repository }} - Successfully deployed ${{ inputs.tag }} :large_green_circle:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Package published to PyPi successfully\"}}]}"
+      FAILURE_PAYLOAD: "{\"blocks\":[{\"type\":\"header\",\"text\":{\"type\":\"plain_text\",\"text\":\":x: ${{ github.repository }} - Failed to deploy ${{ inputs.tag }} :x:\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Failed to publish package to PyPi\"}}]}"
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
