@@ -1,8 +1,10 @@
 name: Run tests
 on:
   push:
+  workflow_call:
+
 jobs:
-  test:
+  test-code:
     strategy:
       fail-fast: false
       matrix:
@@ -30,3 +32,11 @@ jobs:
       - name: Run Checks
         run: |
           bash scripts/test.sh --ci
+
+  test-publish:
+    needs:
+      - test-code
+    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@main
+    with:
+      stage: test
+      tag: "0.0.0"

@@ -1,11 +1,20 @@
 [tool.poetry]
 name = "cruft-iai"
 version = "0.0.0"
-description = "Allows you to maintain all the necessary cruft for packaging and building projects separate from the code you intentionally write. Built on-top of CookieCutter."
+description = "A fork of cruft maintained by i.AI. Allows you to maintain all the necessary cruft for packaging and building projects separate from the code you intentionally write. Built on-top of CookieCutter."
 authors = ["Timothy Crosley <timothy.crosley@gmail.com>", "Sambhav Kothari <sambhavs.email@gmail.com>"]
+maintainers = ["i.AI <i-dot-ai-infra@cabinetoffice.gov.uk>"]
 license = "MIT"
 readme = "README.md"
 packages = [{ include = "cruft" }]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.12"

@@ -1,0 +1,15 @@
+---
+name: Release
+run-name: Release version ${{ github.event.release.tag_name }}
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+    name: Publish
+    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@main
+    with: 
+      stage: prod
+      tag: ${{ github.event.release.tag_name }}
