@@ -1,0 +1,54 @@
+---
+name: Publish
+run-name: Publish ${{ inputs.tag }} to PyPI ${{ inputs.tag }}
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        type: string
+        required: true
+      tag:
+        type: string
+        required: true
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+     id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: |
+          poetry env use "3.12"
+          poetry install
+
+      - name: Bump version number
+        run: poetry version ${{ inputs.tag }}
+
+      - name: Build package
+        run: poetry build
+
+      - name: Publish to test pypi
+        if: inputs.stage == 'test'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: 'https://test.pypi.org/legacy/'
+
+      - name: Publish to prod pypi
+        if: inputs.stage == 'prod'
+        uses: pypa/gh-action-pypi-publish@release/v1
+

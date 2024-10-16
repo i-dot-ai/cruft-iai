@@ -1,6 +1,8 @@
 name: Run tests
 on:
   push:
+  workflow_call:
+
 jobs:
   test:
     strategy:
@@ -30,3 +32,9 @@ jobs:
       - name: Run Checks
         run: |
           bash scripts/test.sh --ci
+
+      - name: Test Publish
+        uses: ./.github/workflows/publish.yml
+        with:
+          stage: test
+          tag: "0.0.0"
