@@ -9,7 +9,7 @@ on:
 jobs:
   publish:
     name: Publish
-    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@EN-623/package_hosting
+    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@main
     with: 
       stage: prod
       tag: ${{ github.event.release.tag_name }}

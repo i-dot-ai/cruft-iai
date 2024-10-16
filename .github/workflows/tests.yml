@@ -36,7 +36,7 @@ jobs:
   test-publish:
     needs:
       - test-code
-    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@EN-623/package_hosting
+    uses: i-dot-ai/cruft-iai/.github/workflows/publish.yml@main
     with:
       stage: test
       tag: "0.0.0"
