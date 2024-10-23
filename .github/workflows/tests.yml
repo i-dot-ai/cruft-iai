@@ -54,7 +54,9 @@ jobs:
           poetry install
 
       - name: Bump version number
-        run: poetry version 0.0.0
+        run: |
+          timestamp=$(date +"%Y%m%d%H%M")
+          poetry version 0.0.0.pre$timestamp
 
       - name: Build package
         run: poetry build
