@@ -6,6 +6,8 @@ from typing import Any, Dict, Optional, Set
 import click
 import typer
 
+from cruft._commands.utils.clean import clean_context
+
 from . import utils
 from .utils import example
 from .utils.iohelper import AltTemporaryDirectory
@@ -138,7 +140,7 @@ def update(
             # to the cruft file
             cruft_state["commit"] = last_commit
             cruft_state["checkout"] = checkout
-            cruft_state["context"] = new_context
+            cruft_state["context"] = clean_context(new_context)
             cruft_file.write_text(utils.cruft.json_dumps(cruft_state))
             typer.secho(
                 "Good work! Project's cruft has been updated and is as clean as possible!",
