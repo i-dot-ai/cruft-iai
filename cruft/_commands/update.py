@@ -26,6 +26,7 @@ def update(
     allow_untracked_files: bool = False,
     extra_context: Optional[Dict[str, Any]] = None,
     extra_context_file: Optional[Path] = None,
+    is_pre_nesting_restructure: bool = False,
 ) -> bool:
     """Update specified project's cruft to the latest and greatest release."""
     cruft_file = utils.cruft.get_cruft_file(project_dir)
@@ -103,6 +104,7 @@ def update(
                 checkout=cruft_state["commit"],
                 deleted_paths=deleted_paths,
                 update_deleted_paths=True,
+                use_non_nested_directory=is_pre_nesting_restructure,
             )
             # Remove private variables from cruft_state to refresh their values
             # from the cookiecutter template config

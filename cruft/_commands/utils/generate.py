@@ -32,6 +32,7 @@ def cookiecutter_template(
     checkout: Optional[str] = None,
     deleted_paths: Optional[Set[Path]] = None,
     update_deleted_paths: bool = False,
+    use_non_nested_directory: bool = False,
 ) -> CookiecutterContext:
     """Generate a clean cookiecutter template in output_dir."""
     if deleted_paths is None:
@@ -42,7 +43,13 @@ def cookiecutter_template(
     repo.head.reset(commit=commit, working_tree=True)
 
     assert repo.working_dir is not None  # nosec B101 (allow assert for type checking)
-    context = _generate_output(cruft_state, Path(repo.working_dir), cookiecutter_input, output_dir)
+    context = _generate_output(
+        cruft_state,
+        Path(repo.working_dir),
+        cookiecutter_input,
+        output_dir,
+        use_non_nested_directory,
+    )
 
     # Get all paths that we are supposed to skip before generating the diff and applying updates
     skip_paths = _get_skip_paths(cruft_state, pyproject_file)
@@ -63,9 +70,14 @@ def cookiecutter_template(
 
 
 def _generate_output(
-    cruft_state: CruftState, project_dir: Path, cookiecutter_input: bool, output_dir: Path
+    cruft_state: CruftState,
+    project_dir: Path,
+    cookiecutter_input: bool,
+    output_dir: Path,
+    use_non_nested_directory: bool,
 ) -> CookiecutterContext:
-    inner_dir = project_dir / (cruft_state.get("directory") or "")
+
+    inner_dir = _determine_template_dir(cruft_state, project_dir, use_non_nested_directory)
 
     # Don't pass entries prefixed by "_" = cookiecutter extensions, not direct user intent
     extra_context = {
@@ -101,6 +113,15 @@ def _generate_output(
             move(str(template_dir / name), str(output_dir))
 
     return new_context
+
+
+def _determine_template_dir(
+    cruft_state: CruftState, project_dir: Path, use_non_nested_directory: bool
+):
+    if use_non_nested_directory:
+        return project_dir
+    else:
+        return project_dir / (cruft_state.get("directory") or "")
 
 
 ##############################
