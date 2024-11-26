@@ -278,6 +278,16 @@ def update(
         writable=False,
         readable=True,
     ),
+    is_pre_nesting_restructure: bool = typer.Option(
+        False,
+        "--pre-restructure",
+        help=(
+            "Allows for a cruft update when a template repository has been updated from a single"
+            " template at the root, to using nested templates. Use this flag if updating a"
+            " project with a saved commit state which is prior to the nested"
+            " directory restructure in the base template."
+        ),
+    ),
 ) -> None:
     if not _commands.update(
         project_dir=project_dir,
@@ -290,6 +300,7 @@ def update(
         allow_untracked_files=allow_untracked_files,
         extra_context=json.loads(extra_context),
         extra_context_file=extra_context_file,
+        is_pre_nesting_restructure=is_pre_nesting_restructure,
     ):
         raise typer.Exit(1)
 
